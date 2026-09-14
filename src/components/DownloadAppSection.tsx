@@ -13,6 +13,7 @@ import {
   Check,
   HardDrive
 } from 'lucide-react';
+import { APP_CONFIG } from '../config/appLinks';
 
 interface DownloadAppSectionProps {
   onOpenWebDemo: () => void;
@@ -22,16 +23,34 @@ export const DownloadAppSection: React.FC<DownloadAppSectionProps> = ({ onOpenWe
   const [downloadingOS, setDownloadingOS] = useState<string | null>(null);
   const [downloadSuccess, setDownloadSuccess] = useState<string | null>(null);
 
-  const handleDownload = (osName: string, filename: string) => {
+  const handleDownload = (osId: string, osName: string, filename: string) => {
     setDownloadingOS(osName);
     setDownloadSuccess(null);
+
+    if (osId === 'android') {
+      // Trigger unduhan file APK Aplikasi Keuangan Keluarga
+      setTimeout(() => {
+        setDownloadingOS(null);
+        setDownloadSuccess(osName);
+
+        const a = document.createElement('a');
+        a.href = APP_CONFIG.apkDownloadUrl;
+        a.download = APP_CONFIG.apkFileName;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }, 800);
+      return;
+    }
 
     setTimeout(() => {
       setDownloadingOS(null);
       setDownloadSuccess(osName);
 
-      // Simulasi trigger download file installer/executable
-      const dummyContent = `KelolaKeuangan Installer (${osName})\nVersi: 1.0.0 Stable\nWebsite: https://kelolakeuangan.web.id\nKontak: kelolacatatankeuangan@gmail.com\n\nTerima kasih telah mengunduh aplikasi KelolaKeuangan!`;
+      // Simulasi trigger download file installer Windows
+      const dummyContent = `Aplikasi Keuangan Keluarga - Setup Windows\nVersi: 1.0.0 Stable\nWebsite: https://kelolakeuangan.web.id\nWeb App: ${APP_CONFIG.webAppUrl}\n\nTerima kasih telah mengunduh Aplikasi Keuangan Keluarga!`;
       const blob = new Blob([dummyContent], { type: 'text/plain' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -41,7 +60,7 @@ export const DownloadAppSection: React.FC<DownloadAppSectionProps> = ({ onOpenWe
       a.click();
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
-    }, 1200);
+    }, 1000);
   };
 
   const platforms = [
@@ -51,20 +70,20 @@ export const DownloadAppSection: React.FC<DownloadAppSectionProps> = ({ onOpenWe
       badge: 'Installer .exe / MSI',
       icon: Monitor,
       desc: 'Aplikasi desktop Windows 10 & 11 dengan performa cepat, shortcut keyboard, dan mode offline.',
-      version: 'v1.2.4 • 64-bit • Bebas Lisensi',
+      version: 'v1.0.0 • 64-bit • Siap Pakai',
       fileSize: '48.5 MB',
-      filename: 'KelolaKeuangan-Setup-Windows-x64.exe',
+      filename: 'Aplikasi-Keuangan-Keluarga-Windows-x64.exe',
       popular: true,
     },
     {
       id: 'android',
-      name: 'Android Mobile',
-      badge: 'APK & Play Store',
+      name: 'Android Mobile (APK)',
+      badge: 'Download APK Gratis',
       icon: Smartphone,
-      desc: 'Mencatat pengeluaran harian kapan saja di genggaman, scan struk dengan kamera, dan sinkron otomatis.',
-      version: 'v1.2.4 • Android 8.0+',
+      desc: 'Pasang langsung di HP Android. Mencatat pengeluaran harian kapan saja di genggaman dan sinkron otomatis.',
+      version: 'v1.0.0 • Android 8.0+',
       fileSize: '18.2 MB',
-      filename: 'KelolaKeuangan-Android.apk',
+      filename: 'Aplikasi-Keuangan-Keluarga.apk',
       popular: false,
     },
     {
@@ -179,7 +198,7 @@ export const DownloadAppSection: React.FC<DownloadAppSectionProps> = ({ onOpenWe
                   ) : (
                     <button
                       type="button"
-                      onClick={() => handleDownload(plat.name, plat.filename || 'installer')}
+                      onClick={() => handleDownload(plat.id, plat.name, plat.filename || 'installer')}
                       disabled={isDownloading}
                       className={`w-full py-3 px-4 rounded-xl font-semibold text-xs sm:text-[13px] flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-98 shadow-xs ${
                         plat.popular

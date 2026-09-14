@@ -8,12 +8,23 @@ import { CloudSecuritySection } from './components/CloudSecuritySection';
 import { FaqContactSection } from './components/FaqContactSection';
 import { DownloadAppSection } from './components/DownloadAppSection';
 import { Footer } from './components/Footer';
-import { InteractiveGuestModal } from './components/InteractiveGuestModal';
+import { AppLoginModal } from './components/AppLoginModal';
+import { MobileDownloadModal } from './components/MobileDownloadModal';
 import { SearchModal } from './components/SearchModal';
+import { APP_CONFIG } from './config/appLinks';
 
 export default function App() {
-  const [guestModalOpen, setGuestModalOpen] = useState(false);
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const [loginModalTab, setLoginModalTab] = useState<'login' | 'register'>('login');
+  const [mobileModalOpen, setMobileModalOpen] = useState(false);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
+
+  // Ketika pengguna mengklik Mulai Catat Gratis atau Mode Tamu:
+  // Langsung tampilkan modal Catatan Keuangan (Mode Tamu, Google, Email/Password) sesuai permintaan!
+  const handleOpenLoginModal = (tab: 'login' | 'register' = 'login') => {
+    setLoginModalTab(tab);
+    setLoginModalOpen(true);
+  };
 
   const handleScrollToFeatures = () => {
     const el = document.getElementById('fitur-unggulan');
@@ -33,7 +44,7 @@ export default function App() {
     <div className="min-h-screen bg-[#FAF7F2] text-[#4A3E39] selection:bg-[#E8D5C8] selection:text-[#382D28] overflow-x-hidden">
       {/* Navigation Bar */}
       <Navbar
-        onOpenGuestMode={() => setGuestModalOpen(true)}
+        onOpenGuestMode={() => handleOpenLoginModal('login')}
         onOpenSearch={() => setSearchModalOpen(true)}
       />
 
@@ -41,7 +52,7 @@ export default function App() {
       <main>
         {/* 1. Hero Section & Original Family Illustration */}
         <HeroSection
-          onOpenGuestMode={() => setGuestModalOpen(true)}
+          onOpenGuestMode={() => handleOpenLoginModal('login')}
           onScrollToFeatures={handleScrollToFeatures}
         />
 
@@ -49,13 +60,13 @@ export default function App() {
         <BenefitCards />
 
         {/* 3. Section Tentang Kami */}
-        <AboutSection onOpenGuestMode={() => setGuestModalOpen(true)} />
+        <AboutSection onOpenGuestMode={() => handleOpenLoginModal('login')} />
 
         {/* 4. Section Fitur Unggulan (8 features grid) */}
         <FeaturesSection onSelectFeature={() => {}} />
 
         {/* 5. Section Mulai Catat Gratis: Unduh & Versi Web */}
-        <DownloadAppSection onOpenWebDemo={() => setGuestModalOpen(true)} />
+        <DownloadAppSection onOpenWebDemo={() => handleOpenLoginModal('login')} />
 
         {/* 6. Section Keamanan Cloud */}
         <CloudSecuritySection />
@@ -65,12 +76,19 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <Footer onOpenGuestMode={() => setGuestModalOpen(true)} />
+      <Footer onOpenGuestMode={() => handleOpenLoginModal('login')} />
 
-      {/* Interactive Guest Mode Preview Modal */}
-      <InteractiveGuestModal
-        isOpen={guestModalOpen}
-        onClose={() => setGuestModalOpen(false)}
+      {/* Modal Tampilan Menu Login & Mode Tamu (Persis Sesuai Gambar yang Diunggah) */}
+      <AppLoginModal
+        isOpen={loginModalOpen}
+        onClose={() => setLoginModalOpen(false)}
+        initialTab={loginModalTab}
+      />
+
+      {/* Pop-up dialog untuk unduh APK */}
+      <MobileDownloadModal
+        isOpen={mobileModalOpen}
+        onClose={() => setMobileModalOpen(false)}
       />
 
       {/* Quick Search Dialog */}
