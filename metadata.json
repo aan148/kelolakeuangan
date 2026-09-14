@@ -1,0 +1,6 @@
+{
+  "name": "KelolaKeuangan",
+  "description": "Keuangan Tenang, Keluarga Senang - Landing page pencatat keuangan keluarga dan pribadi cerdas dengan nuansa warm, elegan, dan ramah keluarga.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
