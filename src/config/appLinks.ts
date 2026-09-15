@@ -4,7 +4,8 @@ export const APP_CONFIG = {
   // URL Web App yang sudah Anda buat di AI Studio
   webAppUrl: 'https://ais-pre-eiwpext6eyfzixe3udwsoe-734293047314.asia-southeast1.run.app',
   // URL unduhan APK untuk HP Android
-  apkDownloadUrl: 'https://github.com/aan148/kelolakeuangan/releases/download/v1.0.0/Aplikasi-Keuangan-Keluarga.apk',
+  apkDownloadUrl: 'https://github.com/aan148/kelolakeuangan/releases/download/v1.0.0/KeuanganKu.apk',
+apkFileName: 'KeuanganKu.apk',
   apkFileName: 'Aplikasi-Keuangan-Keluarga.apk',
 };
 
