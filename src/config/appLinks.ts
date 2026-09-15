@@ -5,8 +5,7 @@ export const APP_CONFIG = {
   webAppUrl: 'https://ais-pre-eiwpext6eyfzixe3udwsoe-734293047314.asia-southeast1.run.app',
   // URL unduhan APK untuk HP Android
   apkDownloadUrl: 'https://github.com/aan148/kelolakeuangan/releases/download/v1.0.0/KeuanganKu.apk',
-apkFileName: 'KeuanganKu.apk',
-  apkFileName: 'Aplikasi-Keuangan-Keluarga.apk',
+  apkFileName: 'KeuanganKu.apk',
 };
 
 /**

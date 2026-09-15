@@ -28,20 +28,14 @@ export const DownloadAppSection: React.FC<DownloadAppSectionProps> = ({ onOpenWe
     setDownloadSuccess(null);
 
     if (osId === 'android') {
-      // Trigger unduhan file APK Aplikasi Keuangan Keluarga
+      // Trigger unduhan file APK Langsung ke HP
       setTimeout(() => {
         setDownloadingOS(null);
         setDownloadSuccess(osName);
 
-        const a = document.createElement('a');
-        a.href = APP_CONFIG.apkDownloadUrl;
-        a.download = APP_CONFIG.apkFileName;
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      }, 800);
+        // Langsung arahkan browser untuk mengunduh berkas APK
+        window.location.href = APP_CONFIG.apkDownloadUrl;
+      }, 500);
       return;
     }
 

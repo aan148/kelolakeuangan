@@ -23,15 +23,9 @@ export const MobileDownloadModal: React.FC<MobileDownloadModalProps> = ({
   if (!isOpen) return null;
 
   const handleDownloadApk = () => {
-    // Membuka atau mengunduh file APK
-    const link = document.createElement('a');
-    link.href = APP_CONFIG.apkDownloadUrl;
-    link.download = APP_CONFIG.apkFileName;
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // Membuka unduhan langsung berkas APK tanpa tab kosong
+    window.location.href = APP_CONFIG.apkDownloadUrl;
+    onClose();
   };
 
   const handleOpenWebAnyway = () => {
