@@ -1,8 +1,8 @@
 // Konfigurasi tautan aplikasi nyata buatan Anda
 export const APP_CONFIG = {
   appName: 'Aplikasi Keuangan Keluarga',
-  // URL Web App yang sudah Anda buat di AI Studio
-  webAppUrl: 'https://ais-pre-eiwpext6eyfzixe3udwsoe-734293047314.asia-southeast1.run.app',
+  // URL Web App resmi Anda di Firebase Hosting
+  webAppUrl: 'https://catatankeuangankeluarga-1cc0d.web.app',
   // URL unduhan APK untuk HP Android
   apkDownloadUrl: 'https://github.com/aan148/kelolakeuangan/releases/download/v1.0.0/KeuanganKu.apk',
   apkFileName: 'KeuanganKu.apk',
