@@ -11,6 +11,7 @@ import { Footer } from './components/Footer';
 import { AppLoginModal } from './components/AppLoginModal';
 import { MobileDownloadModal } from './components/MobileDownloadModal';
 import { SearchModal } from './components/SearchModal';
+import { ScanReceiptModal } from './components/ScanReceiptModal';
 import { APP_CONFIG } from './config/appLinks';
 
 export default function App() {
@@ -18,6 +19,7 @@ export default function App() {
   const [loginModalTab, setLoginModalTab] = useState<'login' | 'register'>('login');
   const [mobileModalOpen, setMobileModalOpen] = useState(false);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
+  const [scanNoticeOpen, setScanNoticeOpen] = useState(false);
 
   // Ketika pengguna mengklik Mulai Catat Gratis atau Mode Tamu:
   // Langsung tampilkan modal Catatan Keuangan (Mode Tamu, Google, Email/Password) sesuai permintaan!
@@ -57,13 +59,16 @@ export default function App() {
         />
 
         {/* 2. Three Key Benefit Cards */}
-        <BenefitCards />
+        <BenefitCards onOpenScanNotice={() => setScanNoticeOpen(true)} />
 
         {/* 3. Section Tentang Kami */}
         <AboutSection onOpenGuestMode={() => handleOpenLoginModal('login')} />
 
         {/* 4. Section Fitur Unggulan (8 features grid) */}
-        <FeaturesSection onSelectFeature={() => {}} />
+        <FeaturesSection
+          onSelectFeature={() => {}}
+          onOpenScanNotice={() => setScanNoticeOpen(true)}
+        />
 
         {/* 5. Section Mulai Catat Gratis: Unduh & Versi Web */}
         <DownloadAppSection onOpenWebDemo={() => handleOpenLoginModal('login')} />
@@ -96,6 +101,13 @@ export default function App() {
         isOpen={searchModalOpen}
         onClose={() => setSearchModalOpen(false)}
         onNavigateToSection={handleNavigateSection}
+        onOpenScanNotice={() => setScanNoticeOpen(true)}
+      />
+
+      {/* Modal Pemberitahuan Fitur Scan Struk Belanjaan (Segera Hadir) */}
+      <ScanReceiptModal
+        isOpen={scanNoticeOpen}
+        onClose={() => setScanNoticeOpen(false)}
       />
     </div>
   );

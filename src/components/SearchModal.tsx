@@ -5,12 +5,14 @@ interface SearchModalProps {
   isOpen: boolean;
   onClose: () => void;
   onNavigateToSection: (sectionId: string) => void;
+  onOpenScanNotice?: () => void;
 }
 
 export const SearchModal: React.FC<SearchModalProps> = ({
   isOpen,
   onClose,
   onNavigateToSection,
+  onOpenScanNotice,
 }) => {
   const [query, setQuery] = useState('');
 
@@ -29,7 +31,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
   const searchableItems = [
     { title: 'Unduh Aplikasi & Versi Web (Windows / Android)', category: 'Download', sectionId: 'mulai-catat-gratis', icon: Download },
     { title: 'Aplikasi Windows Desktop (.exe / MSI)', category: 'Download', sectionId: 'mulai-catat-gratis', icon: Monitor },
-    { title: 'Scan Struk Belanja Otomatis', category: 'Fitur', sectionId: 'fitur-unggulan', icon: Camera },
+    { title: 'Scan Struk Belanja Otomatis (Segera Hadir)', category: 'Fitur', sectionId: 'fitur-unggulan', icon: Camera, isScanNotice: true },
     { title: 'Anggaran & Target Belanja', category: 'Fitur', sectionId: 'fitur-unggulan', icon: Target },
     { title: 'Sinkronisasi Suami & Istri', category: 'Fitur', sectionId: 'benefit-cards-section', icon: Heart },
     { title: 'Pencatatan Pemasukan Keluarga', category: 'Fitur', sectionId: 'fitur-unggulan', icon: Coins },
@@ -75,7 +77,11 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                   key={index}
                   onClick={() => {
                     onClose();
-                    onNavigateToSection(item.sectionId);
+                    if (item.isScanNotice && onOpenScanNotice) {
+                      onOpenScanNotice();
+                    } else {
+                      onNavigateToSection(item.sectionId);
+                    }
                   }}
                   className="w-full p-3 rounded-xl bg-white hover:bg-[#F5EFE7] text-left border border-[#EFE5DA] flex items-center justify-between group transition-colors cursor-pointer"
                 >

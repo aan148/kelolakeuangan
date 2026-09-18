@@ -15,9 +15,10 @@ import {
 
 interface FeaturesSectionProps {
   onSelectFeature?: (featureTitle: string) => void;
+  onOpenScanNotice?: () => void;
 }
 
-export const FeaturesSection: React.FC<FeaturesSectionProps> = ({ onSelectFeature }) => {
+export const FeaturesSection: React.FC<FeaturesSectionProps> = ({ onSelectFeature, onOpenScanNotice }) => {
   const [activeFeature, setActiveFeature] = useState<number | null>(null);
 
   const features = [
@@ -29,7 +30,8 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({ onSelectFeatur
       iconBg: 'bg-[#FBEBE7]',
       iconBorder: 'border-[#F4D3C9]',
       iconColor: 'text-[#B86B5A]',
-      highlight: 'Otomatis & Cepat',
+      highlight: 'Segera Hadir',
+      isComingSoon: true,
       detail: 'Deteksi otomatis nominal total, tanggal, dan nama toko dalam hitungan detik.',
     },
     {
@@ -149,6 +151,10 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({ onSelectFeatur
                 key={feat.id}
                 id={feat.id}
                 onClick={() => {
+                  if (feat.isComingSoon && onOpenScanNotice) {
+                    onOpenScanNotice();
+                    return;
+                  }
                   setActiveFeature(isSelected ? null : index);
                   if (onSelectFeature) onSelectFeature(feat.title);
                 }}
@@ -167,7 +173,13 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({ onSelectFeatur
                       <Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${feat.iconColor}`} />
                     </div>
 
-                    <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-[#FAF4ED] text-[#856D60] border border-[#EFE7DE]">
+                    <span
+                      className={`text-[11px] font-medium px-2.5 py-0.5 rounded-full border ${
+                        feat.isComingSoon
+                          ? 'bg-[#FAF0ED] text-[#C2737D] border-[#F2D2CB] font-semibold animate-pulse'
+                          : 'bg-[#FAF4ED] text-[#856D60] border-[#EFE7DE]'
+                      }`}
+                    >
                       {feat.highlight}
                     </span>
                   </div>

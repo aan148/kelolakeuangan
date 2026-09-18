@@ -1,7 +1,11 @@
 import React from 'react';
 import { Camera, Users, ShieldCheck, Sparkles, CheckCircle2 } from 'lucide-react';
 
-export const BenefitCards: React.FC = () => {
+interface BenefitCardsProps {
+  onOpenScanNotice?: () => void;
+}
+
+export const BenefitCards: React.FC<BenefitCardsProps> = ({ onOpenScanNotice }) => {
   const benefits = [
     {
       id: 'benefit-card-1',
@@ -11,7 +15,8 @@ export const BenefitCards: React.FC = () => {
       iconBg: 'bg-[#F9ECE7]',
       iconBorder: 'border-[#F2D8CD]',
       iconColor: 'text-[#B86B5A]',
-      tag: 'Cepat & Akurat',
+      tag: 'Segera Hadir',
+      isComingSoon: true,
     },
     {
       id: 'benefit-card-2',
@@ -43,11 +48,20 @@ export const BenefitCards: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
           {benefits.map((card, idx) => {
             const IconComponent = card.icon;
+            const isClickable = card.isComingSoon;
+
             return (
               <div
                 key={card.id}
                 id={card.id}
-                className="group bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-[#ECE2D8] shadow-[0_4px_20px_rgba(95,73,59,0.04)] hover:shadow-[0_8px_30px_rgba(95,73,59,0.08)] hover:border-[#DFCFC3] transition-all duration-300 flex flex-row items-start gap-4 sm:gap-5"
+                onClick={() => {
+                  if (card.isComingSoon && onOpenScanNotice) {
+                    onOpenScanNotice();
+                  }
+                }}
+                className={`group bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-[#ECE2D8] shadow-[0_4px_20px_rgba(95,73,59,0.04)] hover:shadow-[0_8px_30px_rgba(95,73,59,0.08)] hover:border-[#DFCFC3] transition-all duration-300 flex flex-row items-start gap-4 sm:gap-5 ${
+                  isClickable ? 'cursor-pointer' : ''
+                }`}
               >
                 {/* Round Icon Container */}
                 <div
@@ -59,7 +73,7 @@ export const BenefitCards: React.FC = () => {
                 {/* Content: Title & Description */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2 mb-1">
-                    <h3 className="text-[15.5px] sm:text-[17px] font-semibold text-[#382A24] leading-snug tracking-tight">
+                    <h3 className="text-[15.5px] sm:text-[17px] font-semibold text-[#382A24] leading-snug tracking-tight group-hover:text-[#684D40] transition-colors">
                       {card.title}
                     </h3>
                   </div>
@@ -68,9 +82,26 @@ export const BenefitCards: React.FC = () => {
                     {card.description}
                   </p>
 
-                  <div className="mt-2.5 flex items-center gap-1.5 text-[11.5px] font-medium text-[#8F7C73]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#B89685]" />
-                    <span>{card.tag}</span>
+                  <div className="mt-2.5 flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 text-[11.5px] font-medium text-[#8F7C73]">
+                      {card.isComingSoon ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#FAF0ED] text-[#C2737D] border border-[#F2D2CB] animate-pulse">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#C2737D]" />
+                          Segera Hadir
+                        </span>
+                      ) : (
+                        <>
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#B89685]" />
+                          <span>{card.tag}</span>
+                        </>
+                      )}
+                    </div>
+
+                    {card.isComingSoon && (
+                      <span className="text-[11px] font-medium text-[#B86B5A] hover:underline">
+                        Lihat Info ›
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>

@@ -16,7 +16,7 @@ export const FaqContactSection: React.FC = () => {
     },
     {
       q: 'Bagaimana cara kerja fitur Scan Struk Belanja?',
-      a: 'Anda cukup memotret nota belanjaan fisik atau tangkapan layar struk belanja online (misal Tokopedia, Shopee, Supermarket). AI lokal kami akan membaca tanggal, total belanja, dan menyarankan kategori belanja secara otomatis.',
+      a: 'Fitur ini sedang kami siapkan (Segera Hadir) dan akan meluncur pada pembaruan mendatang! Nantinya Anda cukup memotret nota belanjaan fisik atau struk digital, lalu sistem cerdas kami akan membaca total belanja, tanggal, serta kategori pengeluaran secara otomatis.',
     },
     {
       q: 'Apakah aplikasi ini benar-benar gratis dan bebas iklan?',
