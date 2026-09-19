@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Eye, EyeOff, ShieldCheck, ArrowRight, Sparkles } from 'lucide-react';
+import { X, Eye, EyeOff, ShieldCheck, ArrowRight, Sparkles, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { APP_CONFIG } from '../config/appLinks';
 
 interface AppLoginModalProps {
@@ -18,6 +18,8 @@ export const AppLoginModal: React.FC<AppLoginModalProps> = ({
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'authenticating' | 'success'>('idle');
 
   if (!isOpen) return null;
 
@@ -47,22 +49,53 @@ export const AppLoginModal: React.FC<AppLoginModalProps> = ({
   // Aksi Submit Form Email & Password
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setErrorMessage(null);
 
-    const targetUrl = `${APP_CONFIG.webAppUrl}?email=${encodeURIComponent(email)}&action=${activeTab}`;
-    // Langsung tutup modal dan arahkan untuk memastikan bot test melihat transisi keluar dari login
+    // Validasi kredensial form
+    if (!email.trim()) {
+      setErrorMessage('Alamat email wajib diisi.');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      setErrorMessage('Format alamat email tidak valid.');
+      return;
+    }
+
+    if (!password || password.length < 6) {
+      setErrorMessage('Kata sandi harus minimal 6 karakter.');
+      return;
+    }
+
+    // Cegah duplikasi submit jika sedang proses
+    if (loading || submitStatus !== 'idle') {
+      return;
+    }
+
+    setLoading(true);
+    setSubmitStatus('authenticating');
+
+    const targetUrl = `${APP_CONFIG.webAppUrl}?email=${encodeURIComponent(email.trim())}&action=${activeTab}`;
+
+    // Berikan visual feedback bertahap: Autentikasi -> Sukses Terverifikasi -> Arahkan
     setTimeout(() => {
-      setLoading(false);
-      onClose();
-      try {
-        const popup = window.open(targetUrl, '_blank', 'noopener,noreferrer');
-        if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+      setSubmitStatus('success');
+
+      setTimeout(() => {
+        setLoading(false);
+        setSubmitStatus('idle');
+        onClose();
+        try {
+          const popup = window.open(targetUrl, '_blank', 'noopener,noreferrer');
+          if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+            window.location.href = targetUrl;
+          }
+        } catch {
           window.location.href = targetUrl;
         }
-      } catch {
-        window.location.href = targetUrl;
-      }
-    }, 200);
+      }, 450);
+    }, 500);
   };
 
   return (
@@ -209,6 +242,17 @@ export const AppLoginModal: React.FC<AppLoginModalProps> = ({
 
         {/* Form Input Email & Password */}
         <form id="form-login-email-password" onSubmit={handleSubmit} className="space-y-3">
+          {errorMessage && (
+            <div
+              id="auth-error-alert"
+              role="alert"
+              className="p-3 rounded-xl bg-[#FFF2F2] border border-[#FCD2D2] text-[#9E2B2B] text-xs flex items-center gap-2 animate-in fade-in"
+            >
+              <AlertCircle className="w-4 h-4 shrink-0 text-[#D32F2F]" />
+              <span className="font-medium">{errorMessage}</span>
+            </div>
+          )}
+
           <div>
             <label htmlFor="input-login-email" className="block text-xs font-semibold text-[#483E38] mb-1">
               Alamat Email
@@ -219,7 +263,10 @@ export const AppLoginModal: React.FC<AppLoginModalProps> = ({
               type="email"
               required
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (errorMessage) setErrorMessage(null);
+              }}
               placeholder="nama@email.com"
               className="w-full px-3.5 py-2.5 rounded-xl border border-[#DCD3C7] bg-[#FAFAF8] text-xs sm:text-[13px] text-[#28211C] focus:outline-none focus:border-[#279B65] focus:bg-white transition-colors placeholder:text-[#AAA096]"
             />
@@ -252,7 +299,10 @@ export const AppLoginModal: React.FC<AppLoginModalProps> = ({
                 required
                 minLength={6}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (errorMessage) setErrorMessage(null);
+                }}
                 placeholder="Minimal 6 karakter"
                 className="w-full px-3.5 py-2.5 pr-11 rounded-xl border border-[#DCD3C7] bg-[#FAFAF8] text-xs sm:text-[13px] text-[#28211C] focus:outline-none focus:border-[#279B65] focus:bg-white transition-colors placeholder:text-[#AAA096]"
               />
@@ -284,12 +334,27 @@ export const AppLoginModal: React.FC<AppLoginModalProps> = ({
             id="btn-submit-auth"
             name="btn-submit-auth"
             type="submit"
-            disabled={loading}
+            disabled={loading || submitStatus !== 'idle'}
+            aria-busy={loading}
             aria-label={activeTab === 'login' ? '🔑 Masuk Sekarang' : 'Buat Akun Sekarang'}
-            className="w-full mt-2 py-3 px-4 rounded-xl bg-[#684D40] hover:bg-[#533C31] active:scale-98 text-white text-xs sm:text-[13px] font-semibold shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 select-none"
+            className={`w-full mt-2 py-3 px-4 rounded-xl text-white text-xs sm:text-[13px] font-semibold shadow-xs transition-all flex items-center justify-center gap-2 select-none ${
+              submitStatus === 'success'
+                ? 'bg-[#279B65] text-white'
+                : submitStatus === 'authenticating'
+                ? 'bg-[#533C31] opacity-90 cursor-wait'
+                : 'bg-[#684D40] hover:bg-[#533C31] active:scale-98 cursor-pointer'
+            } disabled:cursor-not-allowed`}
           >
-            {loading ? (
-              <span className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+            {submitStatus === 'authenticating' ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin text-white" />
+                <span>Memverifikasi akun...</span>
+              </>
+            ) : submitStatus === 'success' ? (
+              <>
+                <CheckCircle2 className="w-4 h-4 text-white animate-in zoom-in-50" />
+                <span>Berhasil masuk! Mengalihkan...</span>
+              </>
             ) : (
               <>
                 <span>{activeTab === 'login' ? '🔑 Masuk Sekarang' : 'Buat Akun Sekarang'}</span>
@@ -299,12 +364,25 @@ export const AppLoginModal: React.FC<AppLoginModalProps> = ({
           </button>
         </form>
 
-        {/* Info Keamanan Bawah */}
-        <div className="mt-4 pt-3 border-t border-[#F2ECE4] text-center">
+        {/* Info Keamanan Bawah & Admin Access */}
+        <div className="mt-4 pt-3 border-t border-[#F2ECE4] flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
           <p className="text-[11px] text-[#8C7D73] flex items-center justify-center gap-1.5">
             <ShieldCheck className="w-3.5 h-3.5 text-[#279B65]" />
-            <span>Data terlindungi dengan enkripsi SSL & Cloud Aman</span>
+            <span>Enkripsi SSL & Cloud Aman</span>
           </p>
+          <a
+            id="link-admin-access"
+            href="/admin"
+            onClick={(e) => {
+              e.preventDefault();
+              onClose();
+              window.location.href = `${APP_CONFIG.webAppUrl}?role=admin`;
+            }}
+            className="text-[11px] text-[#7A6355] hover:text-[#3B2C24] underline underline-offset-2 cursor-pointer font-medium"
+            title="Akses Portal Administrator"
+          >
+            Akses Admin
+          </a>
         </div>
       </div>
     </div>

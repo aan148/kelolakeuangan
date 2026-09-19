@@ -181,9 +181,12 @@ export const DownloadAppSection: React.FC<DownloadAppSectionProps> = ({ onOpenWe
                 <div>
                   {plat.isWeb ? (
                     <button
+                      id="btn-open-web-app"
+                      name="btn-open-web-app"
                       type="button"
+                      aria-label="Buka Versi Web Sekarang"
                       onClick={onOpenWebDemo}
-                      className="w-full py-3 px-4 rounded-xl bg-[#FAF3EC] hover:bg-[#F0E5DA] text-[#63493D] font-semibold text-xs sm:text-[13px] border border-[#DECBC0] flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-98 shadow-xs"
+                      className="w-full py-3 px-4 rounded-xl bg-[#FAF3EC] hover:bg-[#F0E5DA] text-[#63493D] font-semibold text-xs sm:text-[13px] border border-[#DECBC0] flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-98 shadow-xs select-none"
                     >
                       <Globe className="w-4 h-4 text-[#8C5D4B]" />
                       <span>Buka Versi Web Sekarang</span>
