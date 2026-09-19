@@ -10,7 +10,9 @@ import {
   RotateCcw,
   Check,
   Zap,
-  Calendar
+  Calendar,
+  FileSpreadsheet,
+  Download
 } from 'lucide-react';
 
 interface TransactionPreset {
@@ -121,6 +123,40 @@ export const AnimatedInputAndChart: React.FC = () => {
   const svgHeight = 72;
   const stepX = svgWidth / (points.length - 1);
   const maxVal = 100;
+
+  // State untuk interaktivitas Export Laporan Keuangan
+  const [exportPeriode, setExportPeriode] = useState('bulan-ini');
+  const [exportStatus, setExportStatus] = useState<string | null>(null);
+
+  const handleExportCsv = () => {
+    setExportStatus('CSV Berhasil Diunduh!');
+    const csvContent = `Tanggal,Kategori,Deskripsi,Pemasukan,Pengeluaran\n2025-01-01,Dapur,Belanja Mingguan,0,185000\n2025-01-02,Gaji,Gaji Bulanan,8500000,0\n2025-01-03,Anak,Susu & Popok,0,245000\n2025-01-04,Utilitas,Listrik Rumah,0,320000`;
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `Laporan_Keuangan_${exportPeriode}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    setTimeout(() => setExportStatus(null), 3000);
+  };
+
+  const handleExportExcel = () => {
+    setExportStatus('Excel Berhasil Diunduh!');
+    const tsvContent = `Tanggal\tKategori\tDeskripsi\tPemasukan\tPengeluaran\n2025-01-01\tDapur\tBelanja Mingguan\t0\t185000\n2025-01-02\tGaji\tGaji Bulanan\t8500000\t0\n2025-01-03\tAnak\tSusu & Popok\t0\t245000\n2025-01-04\tUtilitas\tListrik Rumah\t0\t320000`;
+    const blob = new Blob([tsvContent], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `Laporan_Keuangan_${exportPeriode}.xls`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    setTimeout(() => setExportStatus(null), 3000);
+  };
 
   // Build SVG path
   const pathD = points.reduce((acc, val, i) => {
@@ -334,6 +370,54 @@ export const AnimatedInputAndChart: React.FC = () => {
             <span>Grafik Terkendali</span>
           </div>
         </div>
+
+        {/* Quick Export Laporan Bar (CSV & Excel) */}
+        <div className="mt-3 pt-2.5 border-t border-[#EFE7DE] flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] text-[#7E6C62] font-medium">Periode:</span>
+            <select
+              id="selectPeriodeExportExcel"
+              value={exportPeriode}
+              onChange={(e) => setExportPeriode(e.target.value)}
+              className="px-2 py-1 text-[11px] rounded-lg bg-[#FAF7F2] border border-[#E4D7CC] text-[#3D3028] focus:outline-none focus:border-[#8C6D58]"
+            >
+              <option value="bulan-ini">Bulan Ini</option>
+              <option value="bulan-lalu">Bulan Lalu</option>
+              <option value="tahun-ini">Tahun 2025</option>
+              <option value="semua">Semua Transaksi</option>
+            </select>
+          </div>
+
+          <div className="flex items-center gap-1.5">
+            <button
+              id="btnExportCsvLaporan"
+              type="button"
+              onClick={handleExportCsv}
+              className="px-2.5 py-1 rounded-lg bg-[#FAF4ED] hover:bg-[#F2E5D8] border border-[#DFCFC2] text-[#694F42] text-[11px] font-medium flex items-center gap-1 transition-colors cursor-pointer active:scale-95"
+              title="Unduh laporan CSV"
+            >
+              <Download className="w-3 h-3 text-[#A8715E]" />
+              <span>Unduh CSV</span>
+            </button>
+
+            <button
+              id="btnExportExcelLaporan"
+              type="button"
+              onClick={handleExportExcel}
+              className="px-2.5 py-1 rounded-lg bg-[#4E7656] hover:bg-[#3D5E43] text-white text-[11px] font-medium flex items-center gap-1 transition-colors cursor-pointer active:scale-95 shadow-2xs"
+              title="Unduh laporan Excel (.xls)"
+            >
+              <FileSpreadsheet className="w-3 h-3 text-[#D5E5D7]" />
+              <span>Unduh Excel</span>
+            </button>
+          </div>
+        </div>
+
+        {exportStatus && (
+          <div className="mt-2 text-center text-[10.5px] font-medium text-[#3E6546] bg-[#EFF6F1] py-1 px-2 rounded-md border border-[#D3E7D7] animate-in fade-in">
+            ✓ {exportStatus}
+          </div>
+        )}
       </div>
     </div>
   );
