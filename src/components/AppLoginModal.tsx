@@ -254,33 +254,45 @@ export const AppLoginModal: React.FC<AppLoginModalProps> = ({
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Minimal 6 karakter"
-                className="w-full px-3.5 py-2.5 pr-10 rounded-xl border border-[#DCD3C7] bg-[#FAFAF8] text-xs sm:text-[13px] text-[#28211C] focus:outline-none focus:border-[#279B65] focus:bg-white transition-colors placeholder:text-[#AAA096]"
+                className="w-full px-3.5 py-2.5 pr-11 rounded-xl border border-[#DCD3C7] bg-[#FAFAF8] text-xs sm:text-[13px] text-[#28211C] focus:outline-none focus:border-[#279B65] focus:bg-white transition-colors placeholder:text-[#AAA096]"
               />
               <button
                 id="btn-toggle-password"
+                name="btn-toggle-password"
                 data-testid="toggle-password"
                 type="button"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowPassword((prev) => !prev);
+                }}
                 aria-pressed={showPassword}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9B8F85] hover:text-[#4A3E37] cursor-pointer p-1 rounded-md"
                 aria-label={showPassword ? 'Sembunyikan password' : 'Lihat password'}
+                title={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-[#8E7E73] hover:text-[#382B24] cursor-pointer rounded-lg hover:bg-[#EFE8DF] transition-colors select-none z-10"
               >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {showPassword ? (
+                  <EyeOff className="w-4 h-4 pointer-events-none" />
+                ) : (
+                  <Eye className="w-4 h-4 pointer-events-none" />
+                )}
               </button>
             </div>
           </div>
 
           <button
             id="btn-submit-auth"
+            name="btn-submit-auth"
             type="submit"
             disabled={loading}
-            className="w-full mt-2 py-3 px-4 rounded-xl bg-[#684D40] hover:bg-[#533C31] active:scale-98 text-white text-xs sm:text-[13px] font-semibold shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70"
+            aria-label={activeTab === 'login' ? '🔑 Masuk Sekarang' : 'Buat Akun Sekarang'}
+            className="w-full mt-2 py-3 px-4 rounded-xl bg-[#684D40] hover:bg-[#533C31] active:scale-98 text-white text-xs sm:text-[13px] font-semibold shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 select-none"
           >
             {loading ? (
               <span className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
             ) : (
               <>
-                <span>{activeTab === 'login' ? 'Masuk ke Aplikasi' : 'Buat Akun Sekarang'}</span>
+                <span>{activeTab === 'login' ? '🔑 Masuk Sekarang' : 'Buat Akun Sekarang'}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </>
             )}

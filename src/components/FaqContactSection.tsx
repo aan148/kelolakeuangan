@@ -207,18 +207,20 @@ export const FaqContactSection: React.FC = () => {
 
                     <button
                       id="btn-kirim-kontak"
+                      name="btn-kirim-kontak"
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full py-3 rounded-xl bg-[#684D40] hover:bg-[#523C31] disabled:opacity-75 disabled:cursor-not-allowed text-[#FAF7F2] text-xs sm:text-sm font-medium shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                      aria-label="Kirim Pesan ke Tim"
+                      className="w-full py-3.5 px-4 rounded-xl bg-[#684D40] hover:bg-[#523C31] disabled:opacity-75 disabled:cursor-not-allowed text-[#FAF7F2] text-xs sm:text-sm font-semibold shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer active:scale-98 select-none relative z-10"
                     >
                       {isSubmitting ? (
                         <>
-                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          <Loader2 className="w-4 h-4 animate-spin" />
                           <span>Mengirim Pesan...</span>
                         </>
                       ) : (
                         <>
-                          <Send className="w-3.5 h-3.5" />
+                          <Send className="w-4 h-4" />
                           <span>Kirim Pesan ke Tim</span>
                         </>
                       )}
