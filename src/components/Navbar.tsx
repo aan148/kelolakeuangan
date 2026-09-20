@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Search, Menu, X, Heart, Sparkles, ArrowRight, ShieldCheck, LogOut, MessageSquare, User } from 'lucide-react';
+import { Search, Menu, X, Heart, Sparkles, ArrowRight, ShieldCheck, LogOut, MessageSquare, User, ExternalLink } from 'lucide-react';
+import { APP_CONFIG } from '../config/appLinks';
 
 interface NavbarProps {
   onOpenGuestMode: () => void;
@@ -113,6 +114,17 @@ export const Navbar: React.FC<NavbarProps> = ({
                       {currentUser.email}
                     </span>
                   </div>
+                  <a
+                    id="btn-nav-open-app"
+                    href={APP_CONFIG.webAppUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hidden sm:inline-flex items-center justify-center gap-1 px-3 py-1.5 rounded-full bg-[#684D40] hover:bg-[#523C31] text-white text-xs font-medium shadow-2xs transition-all cursor-pointer"
+                    title="Buka aplikasi asli Anda"
+                  >
+                    <span>Buka Aplikasi</span>
+                    <ExternalLink className="w-3 h-3 text-[#EAD9CD]" />
+                  </a>
                   <button
                     id="btn-nav-sign-out"
                     data-testid="sign-out-btn"
@@ -189,20 +201,33 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <div className="pt-2 border-t border-[#EFE7DE] flex flex-col gap-2">
               {currentUser ? (
-                <button
-                  id="btn-mobile-sign-out"
-                  data-testid="sign-out-btn"
-                  aria-label="Sign Out"
-                  title="Keluar dari akun"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    if (onSignOut) onSignOut();
-                  }}
-                  className="w-full py-3 px-4 rounded-xl bg-[#FFF0EE] text-[#C44D48] text-[14.5px] font-semibold text-center border border-[#F5D2CC] flex items-center justify-center gap-2"
-                >
-                  <LogOut className="w-4 h-4" />
-                  <span>Sign Out / Keluar</span>
-                </button>
+                <>
+                  <a
+                    id="btn-mobile-open-app"
+                    href={APP_CONFIG.webAppUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-full py-3 px-4 rounded-xl bg-[#684D40] text-white text-[14px] font-semibold text-center flex items-center justify-center gap-2 shadow-xs"
+                  >
+                    <span>Buka Aplikasi Asli</span>
+                    <ExternalLink className="w-4 h-4 text-[#EAD9CD]" />
+                  </a>
+                  <button
+                    id="btn-mobile-sign-out"
+                    data-testid="sign-out-btn"
+                    aria-label="Sign Out"
+                    title="Keluar dari akun"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      if (onSignOut) onSignOut();
+                    }}
+                    className="w-full py-3 px-4 rounded-xl bg-[#FFF0EE] text-[#C44D48] text-[14.5px] font-semibold text-center border border-[#F5D2CC] flex items-center justify-center gap-2"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Sign Out / Keluar</span>
+                  </button>
+                </>
               ) : (
                 <button
                   id="btn-mobile-register-menu"

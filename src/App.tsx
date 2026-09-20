@@ -14,6 +14,8 @@ import { SearchModal } from './components/SearchModal';
 import { ScanReceiptModal } from './components/ScanReceiptModal';
 import { FeedbackModal } from './components/FeedbackModal';
 import { DashboardView, AuthUser } from './components/DashboardView';
+import { CheckCircle2, X, ArrowRight, LayoutDashboard, ExternalLink } from 'lucide-react';
+import { APP_CONFIG } from './config/appLinks';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(() => {
@@ -33,6 +35,7 @@ export default function App() {
   const [searchModalOpen, setSearchModalOpen] = useState(false);
   const [scanNoticeOpen, setScanNoticeOpen] = useState(false);
   const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
+  const [welcomeToast, setWelcomeToast] = useState<string | null>(null);
 
   // Global keydown listener to guarantee Escape dismisses any open modal or overlay,
   // including search overlays, feedback dialogs (such as "How to leave feedback"), and third-party widgets
@@ -105,6 +108,10 @@ export default function App() {
   const handleLoginSuccess = (user: AuthUser) => {
     setCurrentUser(user);
     setActiveView('dashboard');
+    setWelcomeToast(`👋 Selamat datang! Anda berhasil masuk sebagai ${user.email}`);
+    setTimeout(() => {
+      setWelcomeToast(null);
+    }, 4500);
     try {
       localStorage.setItem('kelolakeuangan_auth_user', JSON.stringify(user));
     } catch {
@@ -150,6 +157,30 @@ export default function App() {
   if (currentUser && activeView === 'dashboard') {
     return (
       <div className="min-h-screen bg-[#FAF7F2] text-[#4A3E39] selection:bg-[#E8D5C8] selection:text-[#382D28]">
+        {/* Floating Welcome Toast */}
+        {welcomeToast && (
+          <div className="fixed top-5 right-5 z-50 max-w-md bg-white border border-[#279B65]/30 rounded-2xl p-4 shadow-lg shadow-[#279B65]/10 flex items-start gap-3 animate-in fade-in slide-in-from-top-4 duration-300">
+            <div className="w-8 h-8 rounded-xl bg-[#EDF8F1] text-[#279B65] flex items-center justify-center shrink-0">
+              <CheckCircle2 className="w-5 h-5" />
+            </div>
+            <div className="flex-1 pr-1">
+              <p className="text-xs sm:text-sm font-semibold text-[#2D3F33]">
+                Autentikasi Berhasil
+              </p>
+              <p className="text-xs text-[#527258] mt-0.5 leading-relaxed">
+                {welcomeToast}
+              </p>
+            </div>
+            <button
+              onClick={() => setWelcomeToast(null)}
+              className="text-[#88A890] hover:text-[#2D3F33] p-1 rounded-lg"
+              aria-label="Tutup notifikasi"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
+
         <DashboardView
           user={currentUser}
           onSignOut={handleSignOut}
@@ -174,6 +205,44 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#FAF7F2] text-[#4A3E39] selection:bg-[#E8D5C8] selection:text-[#382D28] overflow-x-hidden">
+      {/* Floating Welcome Toast */}
+      {welcomeToast && (
+        <div className="fixed top-5 right-5 z-50 max-w-md bg-white border border-[#279B65]/30 rounded-2xl p-4 shadow-lg shadow-[#279B65]/10 flex items-start gap-3 animate-in fade-in slide-in-from-top-4 duration-300">
+          <div className="w-8 h-8 rounded-xl bg-[#EDF8F1] text-[#279B65] flex items-center justify-center shrink-0">
+            <CheckCircle2 className="w-5 h-5" />
+          </div>
+          <div className="flex-1 pr-1">
+            <p className="text-xs sm:text-sm font-semibold text-[#2D3F33]">
+              Autentikasi Berhasil
+            </p>
+            <p className="text-xs text-[#527258] mt-0.5 leading-relaxed">
+              {welcomeToast}
+            </p>
+          </div>
+          <button
+            onClick={() => setWelcomeToast(null)}
+            className="text-[#88A890] hover:text-[#2D3F33] p-1 rounded-lg"
+            aria-label="Tutup notifikasi"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
+      {/* Floating Quick Action: Open Dashboard if user is logged in */}
+      {currentUser && (
+        <div className="fixed bottom-6 right-6 z-40 animate-in fade-in slide-in-from-bottom-3">
+          <button
+            onClick={() => setActiveView('dashboard')}
+            className="px-4 py-2.5 rounded-full bg-[#684D40] hover:bg-[#523C31] text-white text-xs sm:text-sm font-semibold shadow-lg shadow-[#684D40]/25 flex items-center gap-2 transition-all hover:scale-105 active:scale-95 cursor-pointer border border-white/20"
+            title="Buka Dasbor Kas Keluarga Anda"
+          >
+            <LayoutDashboard className="w-4 h-4 text-[#FFD79E]" />
+            <span>Dashboard Saya</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
       {/* Navigation Bar */}
       <Navbar
         onOpenGuestMode={() => handleOpenLoginModal('login')}
@@ -202,6 +271,17 @@ export default function App() {
             >
               Buka Dashboard
             </button>
+            <a
+              id="btn-banner-open-real-app"
+              href={APP_CONFIG.webAppUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3 py-1 rounded-lg bg-white border border-[#D5C0B3] text-[#553E32] font-semibold hover:bg-[#FAF7F2] transition-colors cursor-pointer text-xs inline-flex items-center gap-1"
+              title="Buka aplikasi asli Anda di tab baru"
+            >
+              <span>Aplikasi Asli</span>
+              <ExternalLink className="w-3 h-3 text-[#8C6D58]" />
+            </a>
             <button
               id="btn-banner-sign-out"
               data-testid="sign-out-btn"
