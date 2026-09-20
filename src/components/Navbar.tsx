@@ -106,7 +106,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               {/* Logged in User state or CTA Button */}
               {currentUser ? (
-                <div className="flex items-center gap-2">
+                <div id="nav-user-session" data-testid="signed-in-indicator" className="flex items-center gap-2">
                   <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white border border-[#E8DCD1] text-xs">
                     <User className="w-3.5 h-3.5 text-[#8C6D58]" />
                     <span id="nav-user-email" data-testid="user-email" className="font-semibold text-[#382B24] max-w-[150px] truncate">
@@ -116,12 +116,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <button
                     id="btn-nav-sign-out"
                     data-testid="sign-out-btn"
-                    aria-label="Keluar"
+                    aria-label="Sign Out"
+                    title="Keluar dari sesi"
                     onClick={onSignOut}
                     className="inline-flex items-center justify-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-full bg-[#FFF0EE] hover:bg-[#FCE2DD] text-[#C44D48] text-xs sm:text-[13px] font-semibold border border-[#F5D2CC] transition-all cursor-pointer active:scale-98"
                   >
                     <LogOut className="w-3.5 h-3.5" />
-                    <span>Keluar</span>
+                    <span>Sign Out</span>
                   </button>
                 </div>
               ) : (
@@ -191,7 +192,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   id="btn-mobile-sign-out"
                   data-testid="sign-out-btn"
-                  aria-label="Keluar"
+                  aria-label="Sign Out"
+                  title="Keluar dari akun"
                   onClick={() => {
                     setMobileMenuOpen(false);
                     if (onSignOut) onSignOut();
@@ -199,7 +201,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   className="w-full py-3 px-4 rounded-xl bg-[#FFF0EE] text-[#C44D48] text-[14.5px] font-semibold text-center border border-[#F5D2CC] flex items-center justify-center gap-2"
                 >
                   <LogOut className="w-4 h-4" />
-                  <span>Keluar</span>
+                  <span>Sign Out / Keluar</span>
                 </button>
               ) : (
                 <button

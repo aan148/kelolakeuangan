@@ -194,14 +194,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
 
         {/* User profile & Sign out */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          <div className="hidden sm:flex flex-col text-right">
+        <div id="auth-signed-in-status" data-testid="signed-in-indicator" className="flex items-center gap-2 sm:gap-3">
+          <div className="flex flex-col text-right">
             <span
               id="user-display-email"
               data-testid="user-email"
               className="text-xs font-semibold text-[#382B24]"
             >
-              {user.email}
+              Signed in as {user.email}
             </span>
             <span className="text-[10.5px] text-[#279B65] font-medium flex items-center justify-end gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-[#279B65] animate-pulse" />
@@ -209,19 +209,23 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </span>
           </div>
 
-          <div className="w-8 h-8 rounded-full bg-[#EAD9CD] border border-[#D9C4B5] flex items-center justify-center text-[#684D40] text-xs font-bold">
+          <div
+            data-testid="user-avatar"
+            className="w-8 h-8 rounded-full bg-[#EAD9CD] border border-[#D9C4B5] flex items-center justify-center text-[#684D40] text-xs font-bold"
+          >
             {user.email.charAt(0).toUpperCase()}
           </div>
 
           <button
             id="btn-sign-out"
             data-testid="sign-out-btn"
-            aria-label="Keluar"
+            aria-label="Sign Out"
+            title="Keluar dari akun"
             onClick={onSignOut}
             className="px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-white hover:bg-[#FFF0ED] text-[#C44D48] hover:text-[#A83834] border border-[#ECD3CC] text-xs font-semibold shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
           >
             <LogOut className="w-3.5 h-3.5" />
-            <span>Keluar</span>
+            <span>Keluar / Sign Out</span>
           </button>
         </div>
       </header>

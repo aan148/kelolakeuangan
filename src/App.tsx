@@ -189,26 +189,28 @@ export default function App() {
         {currentUser && (
           <div
             id="auth-status-banner"
+            data-testid="signed-in-indicator"
             className="bg-[#FAF0EC] border-b border-[#F0D5CA] px-4 py-2.5 text-center flex items-center justify-center gap-3 text-xs sm:text-sm text-[#6E493D]"
           >
             <span>
-              Sesi terautentikasi aktif untuk <strong id="banner-user-email">{currentUser.email}</strong>.
+              Signed in as <strong id="banner-user-email" data-testid="user-email">{currentUser.email}</strong>
             </span>
             <button
               id="btn-open-dashboard-view"
               onClick={() => setActiveView('dashboard')}
-              className="px-3 py-1 rounded-lg bg-[#684D40] text-white font-medium hover:bg-[#523C31] transition-colors cursor-pointer"
+              className="px-3 py-1 rounded-lg bg-[#684D40] text-white font-medium hover:bg-[#523C31] transition-colors cursor-pointer text-xs"
             >
               Buka Dashboard
             </button>
             <button
               id="btn-banner-sign-out"
               data-testid="sign-out-btn"
-              aria-label="Keluar"
+              aria-label="Sign Out"
+              title="Keluar dari akun"
               onClick={handleSignOut}
-              className="text-[#C44D48] hover:underline font-semibold cursor-pointer"
+              className="text-[#C44D48] hover:underline font-semibold cursor-pointer text-xs"
             >
-              Keluar
+              Sign Out / Keluar
             </button>
           </div>
         )}
