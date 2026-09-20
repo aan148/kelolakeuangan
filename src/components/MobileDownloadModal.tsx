@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   X,
   Smartphone,
@@ -20,6 +20,20 @@ export const MobileDownloadModal: React.FC<MobileDownloadModalProps> = ({
   isOpen,
   onClose,
 }) => {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' || e.keyCode === 27) {
+        e.preventDefault();
+        e.stopPropagation();
+        onClose();
+      }
+    };
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown, true);
+    }
+    return () => window.removeEventListener('keydown', handleKeyDown, true);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const handleDownloadApk = () => {
@@ -36,14 +50,23 @@ export const MobileDownloadModal: React.FC<MobileDownloadModalProps> = ({
   return (
     <div
       id="mobile-download-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Unduh Aplikasi Android APK"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#2B211C]/50 backdrop-blur-xs animate-in fade-in duration-200"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
     >
       <div className="bg-[#FAF7F2] rounded-3xl border border-[#E9DACD] shadow-2xl max-w-md w-full p-6 sm:p-7 relative">
         {/* Close Button */}
         <button
+          id="btn-close-mobile-modal"
+          data-testid="close-mobile-modal"
           onClick={onClose}
           className="absolute top-4 right-4 w-9 h-9 rounded-full bg-[#EFE4D9] hover:bg-[#E2D2C4] flex items-center justify-center text-[#5C4B42] transition-colors cursor-pointer"
-          aria-label="Tutup jendela unduh"
+          aria-label="Close"
+          title="Close"
         >
           <X className="w-4 h-4" />
         </button>

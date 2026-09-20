@@ -1,12 +1,21 @@
 import React, { useState } from 'react';
-import { Search, Menu, X, Heart, Sparkles, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Search, Menu, X, Heart, Sparkles, ArrowRight, ShieldCheck, LogOut, MessageSquare, User } from 'lucide-react';
 
 interface NavbarProps {
   onOpenGuestMode: () => void;
   onOpenSearch: () => void;
+  currentUser?: { email: string; name?: string; role?: string } | null;
+  onSignOut?: () => void;
+  onOpenFeedback?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onOpenGuestMode, onOpenSearch }) => {
+export const Navbar: React.FC<NavbarProps> = ({
+  onOpenGuestMode,
+  onOpenSearch,
+  currentUser,
+  onSignOut,
+  onOpenFeedback,
+}) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
@@ -71,6 +80,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenGuestMode, onOpenSearch })
                   {item.label}
                 </button>
               ))}
+              {onOpenFeedback && (
+                <button
+                  id="nav-link-feedback"
+                  onClick={onOpenFeedback}
+                  className="px-3 py-1.5 rounded-lg text-[13.5px] font-medium text-[#7A5B4C] hover:text-[#322520] hover:bg-[#F2ECE4] transition-colors cursor-pointer flex items-center gap-1"
+                >
+                  <MessageSquare className="w-3.5 h-3.5" />
+                  <span>Feedback</span>
+                </button>
+              )}
             </nav>
 
             {/* Right Side Actions */}
@@ -85,15 +104,36 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenGuestMode, onOpenSearch })
                 <Search className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
               </button>
 
-              {/* Desktop CTA Button */}
-              <button
-                id="btn-nav-register-desktop"
-                onClick={onOpenGuestMode}
-                className="hidden sm:inline-flex items-center justify-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[#684D40] hover:bg-[#553E33] text-[#FAF7F2] text-[13px] sm:text-[14px] font-medium shadow-xs hover:shadow transition-all cursor-pointer active:scale-98"
-              >
-                <span>Mulai Catat Gratis</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
+              {/* Logged in User state or CTA Button */}
+              {currentUser ? (
+                <div className="flex items-center gap-2">
+                  <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white border border-[#E8DCD1] text-xs">
+                    <User className="w-3.5 h-3.5 text-[#8C6D58]" />
+                    <span id="nav-user-email" data-testid="user-email" className="font-semibold text-[#382B24] max-w-[150px] truncate">
+                      {currentUser.email}
+                    </span>
+                  </div>
+                  <button
+                    id="btn-nav-sign-out"
+                    data-testid="sign-out-btn"
+                    aria-label="Keluar"
+                    onClick={onSignOut}
+                    className="inline-flex items-center justify-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-full bg-[#FFF0EE] hover:bg-[#FCE2DD] text-[#C44D48] text-xs sm:text-[13px] font-semibold border border-[#F5D2CC] transition-all cursor-pointer active:scale-98"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span>Keluar</span>
+                  </button>
+                </div>
+              ) : (
+                <button
+                  id="btn-nav-register-desktop"
+                  onClick={onOpenGuestMode}
+                  className="hidden sm:inline-flex items-center justify-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[#684D40] hover:bg-[#553E33] text-[#FAF7F2] text-[13px] sm:text-[14px] font-medium shadow-xs hover:shadow transition-all cursor-pointer active:scale-98"
+                >
+                  <span>Mulai Catat Gratis</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              )}
 
               {/* Mobile Hamburger Button */}
               <button
@@ -114,6 +154,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenGuestMode, onOpenSearch })
             id="mobile-nav-menu"
             className="lg:hidden bg-[#FAF7F2] border-b border-[#E8DDD2] px-5 pt-3 pb-6 space-y-3 shadow-lg animate-in slide-in-from-top-2 duration-200"
           >
+            {currentUser && (
+              <div className="p-3 rounded-xl bg-white border border-[#EADBCE] flex items-center justify-between text-xs">
+                <span className="font-semibold text-[#382B24] truncate">{currentUser.email}</span>
+                <span className="text-[11px] text-[#279B65] font-medium">Sesi Aktif</span>
+              </div>
+            )}
+
             <div className="flex flex-col space-y-1 pt-1">
               {navLinks.map((item) => (
                 <button
@@ -125,20 +172,48 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenGuestMode, onOpenSearch })
                   <span className="text-[#B8A89C] text-xs">›</span>
                 </button>
               ))}
+              {onOpenFeedback && (
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onOpenFeedback();
+                  }}
+                  className="w-full text-left px-3 py-2.5 rounded-xl text-[14.5px] font-medium text-[#7A5B4C] hover:bg-[#F2ECE3] active:bg-[#EADFCF] transition-colors flex items-center justify-between"
+                >
+                  <span>Feedback / Beri Saran</span>
+                  <span className="text-[#B8A89C] text-xs">›</span>
+                </button>
+              )}
             </div>
 
             <div className="pt-2 border-t border-[#EFE7DE] flex flex-col gap-2">
-              <button
-                id="btn-mobile-register-menu"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  onOpenGuestMode();
-                }}
-                className="w-full py-3 px-4 rounded-xl bg-[#684D40] text-[#FAF7F2] text-[14.5px] font-medium text-center shadow-xs flex items-center justify-center gap-2 active:bg-[#523C31]"
-              >
-                <span>Mulai Catat Gratis</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+              {currentUser ? (
+                <button
+                  id="btn-mobile-sign-out"
+                  data-testid="sign-out-btn"
+                  aria-label="Keluar"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    if (onSignOut) onSignOut();
+                  }}
+                  className="w-full py-3 px-4 rounded-xl bg-[#FFF0EE] text-[#C44D48] text-[14.5px] font-semibold text-center border border-[#F5D2CC] flex items-center justify-center gap-2"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Keluar</span>
+                </button>
+              ) : (
+                <button
+                  id="btn-mobile-register-menu"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onOpenGuestMode();
+                  }}
+                  className="w-full py-3 px-4 rounded-xl bg-[#684D40] text-[#FAF7F2] text-[14.5px] font-medium text-center shadow-xs flex items-center justify-center gap-2 active:bg-[#523C31]"
+                >
+                  <span>Mulai Catat Gratis</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              )}
 
               <div className="flex items-center justify-center gap-2 text-[11.5px] text-[#8C7A70] pt-1">
                 <ShieldCheck className="w-3.5 h-3.5 text-[#8DA491]" />
@@ -151,3 +226,4 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenGuestMode, onOpenSearch })
     </>
   );
 };
+

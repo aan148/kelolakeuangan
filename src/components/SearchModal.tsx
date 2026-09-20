@@ -6,6 +6,7 @@ interface SearchModalProps {
   onClose: () => void;
   onNavigateToSection: (sectionId: string) => void;
   onOpenScanNotice?: () => void;
+  onOpenFeedback?: () => void;
 }
 
 export const SearchModal: React.FC<SearchModalProps> = ({
@@ -13,22 +14,28 @@ export const SearchModal: React.FC<SearchModalProps> = ({
   onClose,
   onNavigateToSection,
   onOpenScanNotice,
+  onOpenFeedback,
 }) => {
   const [query, setQuery] = useState('');
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape' || e.keyCode === 27) {
+        e.preventDefault();
+        e.stopPropagation();
+        onClose();
+      }
     };
     if (isOpen) {
-      window.addEventListener('keydown', handleKeyDown);
+      window.addEventListener('keydown', handleKeyDown, true);
     }
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown, true);
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
   const searchableItems = [
+    { title: 'Beri Masukan & Saran (How to leave feedback)', category: 'Feedback', sectionId: 'feedback-modal', icon: FileText, isFeedback: true },
     { title: 'Unduh Aplikasi & Versi Web (Windows / Android)', category: 'Download', sectionId: 'mulai-catat-gratis', icon: Download },
     { title: 'Aplikasi Windows Desktop (.exe / MSI)', category: 'Download', sectionId: 'mulai-catat-gratis', icon: Monitor },
     { title: 'Scan Struk Belanja Otomatis (Segera Hadir)', category: 'Fitur', sectionId: 'fitur-unggulan', icon: Camera, isScanNotice: true },
@@ -46,7 +53,15 @@ export const SearchModal: React.FC<SearchModalProps> = ({
   );
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 px-4 bg-[#2B211C]/40 backdrop-blur-xs animate-in fade-in duration-150">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Pencarian Cepat"
+      className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 px-4 bg-[#2B211C]/40 backdrop-blur-xs animate-in fade-in duration-150"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div className="bg-[#FAF7F2] rounded-3xl border border-[#E9DACD] shadow-2xl max-w-lg w-full overflow-hidden p-4 sm:p-5 relative">
         {/* Search Input */}
         <div className="relative flex items-center mb-3">
@@ -54,14 +69,18 @@ export const SearchModal: React.FC<SearchModalProps> = ({
           <input
             type="text"
             autoFocus
-            placeholder="Cari fitur, keamanan, bantuan..."
+            placeholder="Cari fitur, keamanan, bantuan, feedback..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="w-full pl-10 pr-10 py-3 rounded-2xl bg-white border border-[#E5D5C8] text-sm text-[#382B24] placeholder-[#9E8E84] focus:outline-none focus:border-[#7A5B4C] shadow-xs"
           />
           <button
+            id="btn-close-search"
+            data-testid="close-search-modal"
             onClick={onClose}
-            className="absolute right-3 text-[#8C7A70] hover:text-[#382B24] p-1 rounded-full hover:bg-[#F2ECE4] cursor-pointer"
+            aria-label="Close"
+            title="Close"
+            className="absolute right-3 text-[#8C7A70] hover:text-[#382B24] p-1.5 rounded-full hover:bg-[#F2ECE4] cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -77,7 +96,9 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                   key={index}
                   onClick={() => {
                     onClose();
-                    if (item.isScanNotice && onOpenScanNotice) {
+                    if (item.isFeedback && onOpenFeedback) {
+                      onOpenFeedback();
+                    } else if (item.isScanNotice && onOpenScanNotice) {
                       onOpenScanNotice();
                     } else {
                       onNavigateToSection(item.sectionId);

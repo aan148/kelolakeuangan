@@ -9,12 +9,16 @@ interface ScanReceiptModalProps {
 export const ScanReceiptModal: React.FC<ScanReceiptModalProps> = ({ isOpen, onClose }) => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape' || e.keyCode === 27) {
+        e.preventDefault();
+        e.stopPropagation();
+        onClose();
+      }
     };
     if (isOpen) {
-      window.addEventListener('keydown', handleKeyDown);
+      window.addEventListener('keydown', handleKeyDown, true);
     }
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown, true);
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
@@ -22,6 +26,9 @@ export const ScanReceiptModal: React.FC<ScanReceiptModalProps> = ({ isOpen, onCl
   return (
     <div
       id="scan-receipt-modal-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Scan Struk Belanjaan"
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/55 backdrop-blur-xs animate-in fade-in duration-200"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
@@ -34,9 +41,11 @@ export const ScanReceiptModal: React.FC<ScanReceiptModalProps> = ({ isOpen, onCl
         {/* Tombol Tutup */}
         <button
           id="btn-close-scan-modal"
+          data-testid="close-scan-modal"
           onClick={onClose}
           className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#F4EFEA] hover:bg-[#E8DFD5] flex items-center justify-center text-[#5C4D44] transition-colors cursor-pointer"
-          aria-label="Tutup"
+          aria-label="Close"
+          title="Close"
         >
           <X className="w-4 h-4" />
         </button>
