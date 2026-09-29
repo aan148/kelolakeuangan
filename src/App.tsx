@@ -112,7 +112,7 @@ export default function App() {
   const handleLoginSuccess = (user: AuthUser) => {
     setCurrentUser(user);
     setActiveView('dashboard');
-    setWelcomeToast(`👋 Selamat datang! Anda berhasil masuk sebagai ${user.email}`);
+    setWelcomeToast(`👋 Selamat datang! Anda berhasil masuk sebagai ${user?.email || 'pengguna'}`);
     setTimeout(() => {
       setWelcomeToast(null);
     }, 4500);

@@ -318,7 +318,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <iframe
             key={iframeKey}
             id="real-app-frame"
-            src={APP_CONFIG.webAppUrl}
+            src={`${APP_CONFIG.webAppUrl}${iframeKey > 0 ? `?v=${iframeKey}` : ''}`}
             title="KeuanganKu - Catatan Keuangan Keluarga"
             className="w-full h-full min-h-[calc(100vh-105px)] border-0"
             allow="clipboard-read; clipboard-write; camera"
@@ -341,7 +341,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </h1>
             <p className="text-xs sm:text-sm text-white/80 max-w-xl">
               Catat keuangan otomatis dengan kamera scan struk AI atau manual. Sesi aktif untuk email{' '}
-              <strong className="underline decoration-white/40">{user.email}</strong>.
+              <strong className="underline decoration-white/40">{effectiveUser.email}</strong>.
             </p>
           </div>
 
