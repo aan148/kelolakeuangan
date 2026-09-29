@@ -368,8 +368,8 @@ export const AppLoginModal: React.FC<AppLoginModalProps> = ({
             onClick={(e) => {
               e.preventDefault();
               const adminUser = {
-                email: 'alansari018@gmail.com',
-                name: 'Al Ansari (Admin)',
+                email: 'admin@kelolakeuangan.web.id',
+                name: 'Administrator',
                 role: 'admin',
               };
               try {
