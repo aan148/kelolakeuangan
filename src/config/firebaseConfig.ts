@@ -1,4 +1,4 @@
-// Konfigurasi resmi Firebase baru Anda (catatankeuangan-c7a98)
+// Konfigurasi resmi Firebase baru Anda (catatankeuangan-c7a98) - Updated Live
 export const firebaseConfig = {
   apiKey: "AIzaSyC0Id_aaS5JZc_dVZx7-7bpeKoqKBeDJEI",
   authDomain: "catatankeuangan-c7a98.firebaseapp.com",

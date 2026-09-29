@@ -281,53 +281,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
       </header>
 
-      {/* Real Web App Container (Aplikasi Asli buatan Anda langsung terbuka di sini) */}
-      <div id="real-webapp-embed-container" className="w-full flex-1 flex flex-col min-h-[calc(100vh-62px)] bg-slate-900">
-        {/* Status bar */}
-        <div className="bg-[#261D17] text-[#FAF7F2] px-3 sm:px-6 py-2 border-b border-[#433328] flex items-center justify-between text-xs">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#22C55E] animate-pulse" />
-            <span className="font-semibold text-white">KeuanganKu</span>
-            <span className="text-[#C5B4A6] hidden sm:inline">— Aplikasi Keuangan Keluarga</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setIframeKey((prev) => prev + 1)}
-              title="Muat ulang aplikasi web"
-              className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[#FAF7F2] transition-colors flex items-center gap-1 cursor-pointer text-[11px]"
-            >
-              <RefreshCw className="w-3 h-3" />
-              <span>Muat Ulang</span>
-            </button>
-            <a
-              id="link-open-fullscreen-app"
-              href={APP_CONFIG.webAppUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-3 py-1 rounded-lg bg-[#EAD9CD] hover:bg-white text-[#382B24] font-semibold transition-colors flex items-center gap-1 cursor-pointer text-[11px] shadow-2xs"
-              title="Buka versi web di tab baru (layar penuh)"
-            >
-              <span>Tab Baru</span>
-              <ExternalLink className="w-3 h-3 text-[#382B24]" />
-            </a>
-          </div>
-        </div>
-
-        {/* Live Iframe of Real Web App */}
-        <div className="w-full flex-1 min-h-[calc(100vh-105px)] bg-[#0F172A]">
-          <iframe
-            key={iframeKey}
-            id="real-app-frame"
-            src={`${APP_CONFIG.webAppUrl}${iframeKey > 0 ? `?v=${iframeKey}` : ''}`}
-            title="KeuanganKu - Catatan Keuangan Keluarga"
-            className="w-full h-full min-h-[calc(100vh-105px)] border-0"
-            allow="clipboard-read; clipboard-write; camera"
-          />
-        </div>
-      </div>
-
-      {/* Hidden Container for automated test compliance */}
-      <div style={{ display: 'none' }} aria-hidden="true">
+      {/* Main Native Interactive Dashboard */}
+      <div id="real-webapp-container" className="w-full flex-1 pb-16">
         <main className="max-w-6xl mx-auto px-4 sm:px-6 pt-6 sm:pt-8 space-y-6">
         {/* Welcome Banner */}
         <div className="bg-gradient-to-r from-[#684D40] to-[#513B31] text-white rounded-3xl p-6 sm:p-7 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
