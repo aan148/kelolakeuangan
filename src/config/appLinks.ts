@@ -1,7 +1,7 @@
 // Konfigurasi tautan aplikasi nyata buatan Anda
 export const APP_CONFIG = {
   appName: 'Aplikasi Keuangan Keluarga',
-  // URL Web App resmi Anda (domain resmi Anda)
+  // URL Web App resmi Anda
   webAppUrl: 'https://kelolakeuangan.web.id',
   // URL unduhan APK untuk HP Android
   apkDownloadUrl: 'https://github.com/aan148/kelolakeuangan/releases/download/v1.0.0/KeuanganKu.apk',

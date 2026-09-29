@@ -257,6 +257,17 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </button>
           )}
 
+          {onBackToHome && (
+            <button
+              id="btn-dashboard-back-home"
+              onClick={onBackToHome}
+              className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-white hover:bg-[#F2ECE4] text-[#6B574C] border border-[#DECFC4] text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5"
+              title="Kembali ke beranda utama"
+            >
+              <span>Beranda</span>
+            </button>
+          )}
+
           {onSignOut && (
             <button
               id="btn-dashboard-logout"
