@@ -1,5 +1,5 @@
 // KelolaKeuangan PWA Service Worker
-const CACHE_NAME = 'kelolakeuangan-v1.1';
+const CACHE_NAME = 'kelolakeuangan-v2.0-clean-db';
 const PRECACHE_ASSETS = [
   '/',
   '/index.html',
