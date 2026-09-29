@@ -257,25 +257,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </button>
           )}
 
-          <a
-            id="btn-open-real-app-external"
-            href={APP_CONFIG.webAppUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-white hover:bg-[#FAF5EE] text-[#553E32] border border-[#D8C7B9] text-xs font-semibold shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
-            title="Buka aplikasi asli Anda di tab baru"
-          >
-            <ExternalLink className="w-3.5 h-3.5 text-[#8C6D58]" />
-            <span className="hidden sm:inline">Buka Layar Penuh</span>
-          </a>
-
-          {onBackToHome && (
+          {onSignOut && (
             <button
-              onClick={onBackToHome}
-              className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-white hover:bg-[#F2ECE4] text-[#6B574C] border border-[#DECFC4] text-xs font-medium transition-all cursor-pointer"
-              title="Kembali ke beranda"
+              id="btn-dashboard-logout"
+              onClick={onSignOut}
+              className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-white hover:bg-[#FBEBEB] text-[#B83838] border border-[#E8D0D0] text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5"
+              title="Keluar dari akun aplikasi"
             >
-              <span>Beranda</span>
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Keluar</span>
             </button>
           )}
         </div>

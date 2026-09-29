@@ -1,107 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { Navbar } from './components/Navbar';
-import { HeroSection } from './components/HeroSection';
-import { BenefitCards } from './components/BenefitCards';
-import { AboutSection } from './components/AboutSection';
-import { FeaturesSection } from './components/FeaturesSection';
-import { CloudSecuritySection } from './components/CloudSecuritySection';
-import { FaqContactSection } from './components/FaqContactSection';
-import { DownloadAppSection } from './components/DownloadAppSection';
-import { Footer } from './components/Footer';
-import { AppLoginModal } from './components/AppLoginModal';
-import { MobileDownloadModal } from './components/MobileDownloadModal';
-import { SearchModal } from './components/SearchModal';
-import { ScanReceiptModal } from './components/ScanReceiptModal';
-import { FeedbackModal } from './components/FeedbackModal';
+import { AppLoginPage } from './components/AppLoginPage';
 import { DashboardView, AuthUser } from './components/DashboardView';
-import { CheckCircle2, X, ArrowRight, LayoutDashboard, ExternalLink } from 'lucide-react';
-import { APP_CONFIG } from './config/appLinks';
+import { ScanReceiptModal } from './components/ScanReceiptModal';
+import { CheckCircle2, X } from 'lucide-react';
 
 export default function App() {
-  const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
-
-  useEffect(() => {
+  const [currentUser, setCurrentUser] = useState<AuthUser | null>(() => {
     try {
-      localStorage.removeItem('kelolakeuangan_auth_user');
+      const saved = localStorage.getItem('kelolakeuangan_auth_user');
+      if (saved) {
+        return JSON.parse(saved);
+      }
     } catch {
       // ignore
     }
-  }, []);
+    return null;
+  });
 
-  const [activeView, setActiveView] = useState<'landing' | 'dashboard'>('landing');
-  const [loginModalOpen, setLoginModalOpen] = useState(false);
-  const [loginModalTab, setLoginModalTab] = useState<'login' | 'register'>('login');
-  const [mobileModalOpen, setMobileModalOpen] = useState(false);
-  const [searchModalOpen, setSearchModalOpen] = useState(false);
   const [scanNoticeOpen, setScanNoticeOpen] = useState(false);
-  const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
   const [welcomeToast, setWelcomeToast] = useState<string | null>(null);
 
-  // Global keydown listener to guarantee Escape dismisses any open modal or overlay,
-  // including search overlays, feedback dialogs (such as "How to leave feedback"), and third-party widgets
-  useEffect(() => {
-    const handleGlobalKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' || e.keyCode === 27) {
-        // Close all React modal states
-        setSearchModalOpen(false);
-        setLoginModalOpen(false);
-        setMobileModalOpen(false);
-        setScanNoticeOpen(false);
-        setFeedbackModalOpen(false);
-
-        // Find and click any close buttons on the page (e.g. third-party SimpleCommenter or dialogs)
-        const closeButtons = document.querySelectorAll<HTMLElement>(
-          'button[aria-label="Close"], button[aria-label="close"], button[aria-label*="Close" i], button[aria-label*="Tutup" i], button[data-testid*="close" i], .close-button, .modal-close'
-        );
-        closeButtons.forEach((btn) => {
-          try {
-            if (btn.offsetParent !== null || btn.offsetWidth > 0 || btn.offsetHeight > 0) {
-              btn.click();
-            }
-          } catch {
-            // ignore
-          }
-        });
-
-        // Specifically find any dialog or overlay containing "How to leave feedback"
-        const dialogs = document.querySelectorAll<HTMLElement>(
-          'dialog[open], [role="dialog"], [aria-modal="true"], div[class*="modal"], div[class*="overlay"], div[id*="feedback"], div[class*="feedback"], div[class*="sc-"], div[id*="simplecommenter"]'
-        );
-        dialogs.forEach((dialog) => {
-          try {
-            if (dialog.innerText && dialog.innerText.toLowerCase().includes('feedback')) {
-              const closeBtn = dialog.querySelector<HTMLElement>('button[aria-label*="close" i], button[aria-label*="tutup" i], button.close, [data-dismiss]');
-              if (closeBtn) {
-                closeBtn.click();
-              } else {
-                dialog.style.display = 'none';
-              }
-            }
-          } catch {
-            // ignore
-          }
-        });
-      }
-    };
-
-    window.addEventListener('keydown', handleGlobalKeyDown, true);
-    return () => window.removeEventListener('keydown', handleGlobalKeyDown, true);
-  }, []);
-
-  // Check URL queries on mount
+  // Check URL queries on mount (e.g. ?action=scan)
   useEffect(() => {
     try {
       const params = new URLSearchParams(window.location.search);
       if (params.get('action') === 'scan' || params.get('scan') === 'true') {
         setScanNoticeOpen(true);
-      } else if (params.get('view') === 'dashboard') {
-        setActiveView('dashboard');
-      } else if (params.get('login') === 'true' || params.get('auth') === 'login') {
-        setLoginModalOpen(true);
-      } else if (params.get('feedback') === 'true') {
-        setFeedbackModalOpen(true);
-      } else if (params.get('search') === 'true') {
-        setSearchModalOpen(true);
       }
     } catch {
       // ignore
@@ -111,7 +35,6 @@ export default function App() {
   // When user logs in successfully:
   const handleLoginSuccess = (user: AuthUser) => {
     setCurrentUser(user);
-    setActiveView('dashboard');
     setWelcomeToast(`👋 Selamat datang! Anda berhasil masuk sebagai ${user?.email || 'pengguna'}`);
     setTimeout(() => {
       setWelcomeToast(null);
@@ -123,10 +46,9 @@ export default function App() {
     }
   };
 
-  // Sign out handler
+  // Sign out handler -> langsung kembali ke halaman login aplikasi
   const handleSignOut = () => {
     setCurrentUser(null);
-    setActiveView('landing');
     try {
       localStorage.removeItem('kelolakeuangan_auth_user');
     } catch {
@@ -134,95 +56,16 @@ export default function App() {
     }
   };
 
-  const handleOpenLoginModal = (tab: 'login' | 'register' = 'login') => {
-    setLoginModalTab(tab);
-    setLoginModalOpen(true);
-  };
-
-  const handleScrollToFeatures = () => {
-    const el = document.getElementById('fitur-unggulan');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  const handleNavigateSection = (sectionId: string) => {
-    if (sectionId === 'feedback-modal') {
-      setFeedbackModalOpen(true);
-      return;
-    }
-    const el = document.getElementById(sectionId);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  // If active view is dashboard, render the Dashboard view directly without requiring login
-  if (activeView === 'dashboard') {
+  // 1. Jika pengguna BELUM login: LANGSUNG TAMPILKAN HALAMAN LOGIN APLIKASI
+  if (!currentUser) {
     return (
-      <div className="min-h-screen bg-[#FAF7F2] text-[#4A3E39] selection:bg-[#E8D5C8] selection:text-[#382D28]">
-        {/* Floating Welcome Toast */}
-        {welcomeToast && (
-          <div className="fixed top-5 right-5 z-50 max-w-md bg-white border border-[#279B65]/30 rounded-2xl p-4 shadow-lg shadow-[#279B65]/10 flex items-start gap-3 animate-in fade-in slide-in-from-top-4 duration-300">
-            <div className="w-8 h-8 rounded-xl bg-[#EDF8F1] text-[#279B65] flex items-center justify-center shrink-0">
-              <CheckCircle2 className="w-5 h-5" />
-            </div>
-            <div className="flex-1 pr-1">
-              <p className="text-xs sm:text-sm font-semibold text-[#2D3F33]">
-                Autentikasi Berhasil
-              </p>
-              <p className="text-xs text-[#527258] mt-0.5 leading-relaxed">
-                {welcomeToast}
-              </p>
-            </div>
-            <button
-              onClick={() => setWelcomeToast(null)}
-              className="text-[#88A890] hover:text-[#2D3F33] p-1 rounded-lg"
-              aria-label="Tutup notifikasi"
-            >
-              <X className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        )}
-
-        <DashboardView
-          user={currentUser}
-          onSignOut={handleSignOut}
-          onBackToHome={() => setActiveView('landing')}
-          onOpenScanReceipt={() => setScanNoticeOpen(true)}
-        />
-        {/* Quick Search Dialog */}
-        <SearchModal
-          isOpen={searchModalOpen}
-          onClose={() => setSearchModalOpen(false)}
-          onNavigateToSection={handleNavigateSection}
-          onOpenScanNotice={() => setScanNoticeOpen(true)}
-          onOpenFeedback={() => setFeedbackModalOpen(true)}
-        />
-        {/* Modal Pindai Struk Belanjaan AI */}
-        <ScanReceiptModal
-          isOpen={scanNoticeOpen}
-          onClose={() => setScanNoticeOpen(false)}
-          onOpenDashboard={() => setActiveView('dashboard')}
-          onTransactionSaved={(tx) => {
-            if (!tx) return;
-            const cat = tx.category || 'Belanja';
-            const amt = typeof tx.amount === 'number' ? tx.amount.toLocaleString('id-ID') : '0';
-            setWelcomeToast(`Struk belanja ${cat} senilai Rp ${amt} berhasil dicatat!`);
-            setTimeout(() => setWelcomeToast(null), 5000);
-          }}
-        />
-        {/* Feedback Modal */}
-        <FeedbackModal
-          isOpen={feedbackModalOpen}
-          onClose={() => setFeedbackModalOpen(false)}
-        />
-      </div>
+      <AppLoginPage onLoginSuccess={handleLoginSuccess} />
     );
   }
 
+  // 2. Jika pengguna SUDAH login: LANGSUNG TAMPILKAN DASHBOARD APLIKASI
   return (
-    <div className="min-h-screen bg-[#FAF7F2] text-[#4A3E39] selection:bg-[#E8D5C8] selection:text-[#382D28] overflow-x-hidden">
+    <div className="min-h-screen bg-[#FAF7F2] text-[#4A3E39] selection:bg-[#E8D5C8] selection:text-[#382D28]">
       {/* Floating Welcome Toast */}
       {welcomeToast && (
         <div className="fixed top-5 right-5 z-50 max-w-md bg-white border border-[#279B65]/30 rounded-2xl p-4 shadow-lg shadow-[#279B65]/10 flex items-start gap-3 animate-in fade-in slide-in-from-top-4 duration-300">
@@ -247,138 +90,17 @@ export default function App() {
         </div>
       )}
 
-      {/* Floating Quick Action: Open Dashboard if user is logged in */}
-      {currentUser && (
-        <div className="fixed bottom-6 right-6 z-40 animate-in fade-in slide-in-from-bottom-3">
-          <button
-            onClick={() => setActiveView('dashboard')}
-            className="px-4 py-2.5 rounded-full bg-[#684D40] hover:bg-[#523C31] text-white text-xs sm:text-sm font-semibold shadow-lg shadow-[#684D40]/25 flex items-center gap-2 transition-all hover:scale-105 active:scale-95 cursor-pointer border border-white/20"
-            title="Buka Dasbor Kas Keluarga Anda"
-          >
-            <LayoutDashboard className="w-4 h-4 text-[#FFD79E]" />
-            <span>Dashboard Saya</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      )}
-      {/* Navigation Bar */}
-      <Navbar
-        onOpenGuestMode={() => handleOpenLoginModal('login')}
-        onOpenSearch={() => setSearchModalOpen(true)}
-        currentUser={currentUser}
+      {/* Main App Dashboard */}
+      <DashboardView
+        user={currentUser}
         onSignOut={handleSignOut}
-        onOpenFeedback={() => setFeedbackModalOpen(true)}
-      />
-
-      {/* Main Page Sections */}
-      <main>
-        {/* If user is logged in, show an authenticated dashboard quick access banner */}
-        {currentUser && (
-          <div
-            id="auth-status-banner"
-            data-testid="signed-in-indicator"
-            className="bg-[#FAF0EC] border-b border-[#F0D5CA] px-4 py-2.5 text-center flex items-center justify-center gap-3 text-xs sm:text-sm text-[#6E493D]"
-          >
-            <span>
-              Signed in as <strong id="banner-user-email" data-testid="user-email">{currentUser.email}</strong>
-            </span>
-            <button
-              id="btn-open-dashboard-view"
-              onClick={() => setActiveView('dashboard')}
-              className="px-3 py-1 rounded-lg bg-[#684D40] text-white font-medium hover:bg-[#523C31] transition-colors cursor-pointer text-xs"
-            >
-              Buka Dashboard
-            </button>
-            <a
-              id="btn-banner-open-real-app"
-              href={APP_CONFIG.webAppUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-3 py-1 rounded-lg bg-white border border-[#D5C0B3] text-[#553E32] font-semibold hover:bg-[#FAF7F2] transition-colors cursor-pointer text-xs inline-flex items-center gap-1"
-              title="Buka aplikasi asli Anda di tab baru"
-            >
-              <span>Aplikasi Asli</span>
-              <ExternalLink className="w-3 h-3 text-[#8C6D58]" />
-            </a>
-            <button
-              id="btn-banner-sign-out"
-              data-testid="sign-out-btn"
-              aria-label="Sign Out"
-              title="Keluar dari akun"
-              onClick={handleSignOut}
-              className="text-[#C44D48] hover:underline font-semibold cursor-pointer text-xs"
-            >
-              Sign Out / Keluar
-            </button>
-          </div>
-        )}
-
-        {/* 1. Hero Section & Original Family Illustration */}
-        <HeroSection
-          onOpenGuestMode={() => setActiveView('dashboard')}
-          onScrollToFeatures={handleScrollToFeatures}
-          onOpenScanReceipt={() => setScanNoticeOpen(true)}
-        />
-
-        {/* 2. Three Key Benefit Cards */}
-        <BenefitCards onOpenScanNotice={() => setScanNoticeOpen(true)} />
-
-        {/* 3. Section Tentang Kami */}
-        <AboutSection
-          onOpenGuestMode={() => setActiveView('dashboard')}
-        />
-
-        {/* 4. Section Fitur Unggulan (8 features grid) */}
-        <FeaturesSection
-          onSelectFeature={() => {}}
-          onOpenScanNotice={() => setScanNoticeOpen(true)}
-        />
-
-        {/* 5. Section Mulai Catat Gratis: Unduh & Versi Web */}
-        <DownloadAppSection
-          onOpenWebDemo={() => setActiveView('dashboard')}
-        />
-
-        {/* 6. Section Keamanan Cloud */}
-        <CloudSecuritySection />
-
-        {/* 7. Section Bantuan & Kontak / FAQ */}
-        <FaqContactSection />
-      </main>
-
-      {/* Footer */}
-      <Footer
-        onOpenGuestMode={() => setActiveView('dashboard')}
-      />
-
-      {/* Modal Tampilan Menu Login & Mode Tamu */}
-      <AppLoginModal
-        isOpen={loginModalOpen}
-        onClose={() => setLoginModalOpen(false)}
-        initialTab={loginModalTab}
-        onLoginSuccess={handleLoginSuccess}
-      />
-
-      {/* Pop-up dialog untuk unduh APK */}
-      <MobileDownloadModal
-        isOpen={mobileModalOpen}
-        onClose={() => setMobileModalOpen(false)}
-      />
-
-      {/* Quick Search Dialog */}
-      <SearchModal
-        isOpen={searchModalOpen}
-        onClose={() => setSearchModalOpen(false)}
-        onNavigateToSection={handleNavigateSection}
-        onOpenScanNotice={() => setScanNoticeOpen(true)}
-        onOpenFeedback={() => setFeedbackModalOpen(true)}
+        onOpenScanReceipt={() => setScanNoticeOpen(true)}
       />
 
       {/* Modal Pindai Struk Belanjaan AI */}
       <ScanReceiptModal
         isOpen={scanNoticeOpen}
         onClose={() => setScanNoticeOpen(false)}
-        onOpenDashboard={() => setActiveView('dashboard')}
         onTransactionSaved={(tx) => {
           if (!tx) return;
           const cat = tx.category || 'Belanja';
@@ -386,12 +108,6 @@ export default function App() {
           setWelcomeToast(`Struk belanja ${cat} senilai Rp ${amt} berhasil dicatat!`);
           setTimeout(() => setWelcomeToast(null), 5000);
         }}
-      />
-
-      {/* Modal Feedback & Masukan (How to leave feedback) */}
-      <FeedbackModal
-        isOpen={feedbackModalOpen}
-        onClose={() => setFeedbackModalOpen(false)}
       />
     </div>
   );
