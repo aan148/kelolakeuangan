@@ -1,15 +1,17 @@
 import React from 'react';
-import { Sparkles, Heart, ArrowRight, ShieldCheck, Users, Check } from 'lucide-react';
+import { Sparkles, Heart, ArrowRight, ShieldCheck, Users, Check, Camera } from 'lucide-react';
 import { HeroIllustration } from './HeroIllustration';
 
 interface HeroSectionProps {
   onOpenGuestMode: () => void;
   onScrollToFeatures: () => void;
+  onOpenScanReceipt?: () => void;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
   onOpenGuestMode,
   onScrollToFeatures,
+  onOpenScanReceipt,
 }) => {
   return (
     <section
@@ -91,11 +93,23 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 <ArrowRight className="w-4 h-4 text-[#ECDACF]" />
               </button>
 
-              {/* Button 2: Pelajari Fitur */}
+              {/* Button 2: Pindai Struk AI */}
+              {onOpenScanReceipt && (
+                <button
+                  id="btn-hero-scan-receipt"
+                  onClick={onOpenScanReceipt}
+                  className="h-12 sm:h-13 px-5 sm:px-6 rounded-2xl bg-[#FAF1E8] hover:bg-[#F3E5D8] active:scale-98 text-[#734A38] border border-[#E8D4C4] font-semibold text-[14.5px] sm:text-[15.5px] shadow-2xs hover:shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Camera className="w-4 h-4 text-[#8C5D4B]" />
+                  <span>Pindai Struk AI</span>
+                </button>
+              )}
+
+              {/* Button 3: Pelajari Fitur */}
               <button
                 id="btn-pelajari-fitur"
                 onClick={onScrollToFeatures}
-                className="h-12 sm:h-13 px-6 sm:px-7 rounded-2xl bg-[#FFFFFF] hover:bg-[#F7F2EB] active:scale-98 text-[#4E3F37] border border-[#E7DDD2] font-medium text-[15px] sm:text-[16px] shadow-xs hover:shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="h-12 sm:h-13 px-5 sm:px-6 rounded-2xl bg-[#FFFFFF] hover:bg-[#F7F2EB] active:scale-98 text-[#4E3F37] border border-[#E7DDD2] font-medium text-[14.5px] sm:text-[15.5px] shadow-xs hover:shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <span>Pelajari Fitur</span>
               </button>

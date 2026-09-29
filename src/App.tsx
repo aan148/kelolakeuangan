@@ -18,15 +18,15 @@ import { CheckCircle2, X, ArrowRight, LayoutDashboard, ExternalLink } from 'luci
 import { APP_CONFIG } from './config/appLinks';
 
 export default function App() {
-  const [currentUser, setCurrentUser] = useState<AuthUser | null>(() => {
+  const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
+
+  useEffect(() => {
     try {
-      const saved = localStorage.getItem('kelolakeuangan_auth_user');
-      if (saved) return JSON.parse(saved);
+      localStorage.removeItem('kelolakeuangan_auth_user');
     } catch {
-      // fallback
+      // ignore
     }
-    return null;
-  });
+  }, []);
 
   const [activeView, setActiveView] = useState<'landing' | 'dashboard'>('landing');
   const [loginModalOpen, setLoginModalOpen] = useState(false);
@@ -92,7 +92,11 @@ export default function App() {
   useEffect(() => {
     try {
       const params = new URLSearchParams(window.location.search);
-      if (params.get('login') === 'true' || params.get('auth') === 'login') {
+      if (params.get('action') === 'scan' || params.get('scan') === 'true') {
+        setScanNoticeOpen(true);
+      } else if (params.get('view') === 'dashboard') {
+        setActiveView('dashboard');
+      } else if (params.get('login') === 'true' || params.get('auth') === 'login') {
         setLoginModalOpen(true);
       } else if (params.get('feedback') === 'true') {
         setFeedbackModalOpen(true);
@@ -153,8 +157,8 @@ export default function App() {
     }
   };
 
-  // If user is authenticated and active view is dashboard, render the Dashboard view
-  if (currentUser && activeView === 'dashboard') {
+  // If active view is dashboard, render the Dashboard view directly without requiring login
+  if (activeView === 'dashboard') {
     return (
       <div className="min-h-screen bg-[#FAF7F2] text-[#4A3E39] selection:bg-[#E8D5C8] selection:text-[#382D28]">
         {/* Floating Welcome Toast */}
@@ -185,6 +189,7 @@ export default function App() {
           user={currentUser}
           onSignOut={handleSignOut}
           onBackToHome={() => setActiveView('landing')}
+          onOpenScanReceipt={() => setScanNoticeOpen(true)}
         />
         {/* Quick Search Dialog */}
         <SearchModal
@@ -193,6 +198,19 @@ export default function App() {
           onNavigateToSection={handleNavigateSection}
           onOpenScanNotice={() => setScanNoticeOpen(true)}
           onOpenFeedback={() => setFeedbackModalOpen(true)}
+        />
+        {/* Modal Pindai Struk Belanjaan AI */}
+        <ScanReceiptModal
+          isOpen={scanNoticeOpen}
+          onClose={() => setScanNoticeOpen(false)}
+          onOpenDashboard={() => setActiveView('dashboard')}
+          onTransactionSaved={(tx) => {
+            if (!tx) return;
+            const cat = tx.category || 'Belanja';
+            const amt = typeof tx.amount === 'number' ? tx.amount.toLocaleString('id-ID') : '0';
+            setWelcomeToast(`Struk belanja ${cat} senilai Rp ${amt} berhasil dicatat!`);
+            setTimeout(() => setWelcomeToast(null), 5000);
+          }}
         />
         {/* Feedback Modal */}
         <FeedbackModal
@@ -297,14 +315,9 @@ export default function App() {
 
         {/* 1. Hero Section & Original Family Illustration */}
         <HeroSection
-          onOpenGuestMode={() => {
-            if (currentUser) {
-              setActiveView('dashboard');
-            } else {
-              handleOpenLoginModal('login');
-            }
-          }}
+          onOpenGuestMode={() => setActiveView('dashboard')}
           onScrollToFeatures={handleScrollToFeatures}
+          onOpenScanReceipt={() => setScanNoticeOpen(true)}
         />
 
         {/* 2. Three Key Benefit Cards */}
@@ -312,13 +325,7 @@ export default function App() {
 
         {/* 3. Section Tentang Kami */}
         <AboutSection
-          onOpenGuestMode={() => {
-            if (currentUser) {
-              setActiveView('dashboard');
-            } else {
-              handleOpenLoginModal('login');
-            }
-          }}
+          onOpenGuestMode={() => setActiveView('dashboard')}
         />
 
         {/* 4. Section Fitur Unggulan (8 features grid) */}
@@ -329,13 +336,7 @@ export default function App() {
 
         {/* 5. Section Mulai Catat Gratis: Unduh & Versi Web */}
         <DownloadAppSection
-          onOpenWebDemo={() => {
-            if (currentUser) {
-              setActiveView('dashboard');
-            } else {
-              handleOpenLoginModal('login');
-            }
-          }}
+          onOpenWebDemo={() => setActiveView('dashboard')}
         />
 
         {/* 6. Section Keamanan Cloud */}
@@ -347,13 +348,7 @@ export default function App() {
 
       {/* Footer */}
       <Footer
-        onOpenGuestMode={() => {
-          if (currentUser) {
-            setActiveView('dashboard');
-          } else {
-            handleOpenLoginModal('login');
-          }
-        }}
+        onOpenGuestMode={() => setActiveView('dashboard')}
       />
 
       {/* Modal Tampilan Menu Login & Mode Tamu */}
@@ -379,10 +374,18 @@ export default function App() {
         onOpenFeedback={() => setFeedbackModalOpen(true)}
       />
 
-      {/* Modal Pemberitahuan Fitur Scan Struk Belanjaan (Segera Hadir) */}
+      {/* Modal Pindai Struk Belanjaan AI */}
       <ScanReceiptModal
         isOpen={scanNoticeOpen}
         onClose={() => setScanNoticeOpen(false)}
+        onOpenDashboard={() => setActiveView('dashboard')}
+        onTransactionSaved={(tx) => {
+          if (!tx) return;
+          const cat = tx.category || 'Belanja';
+          const amt = typeof tx.amount === 'number' ? tx.amount.toLocaleString('id-ID') : '0';
+          setWelcomeToast(`Struk belanja ${cat} senilai Rp ${amt} berhasil dicatat!`);
+          setTimeout(() => setWelcomeToast(null), 5000);
+        }}
       />
 
       {/* Modal Feedback & Masukan (How to leave feedback) */}

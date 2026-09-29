@@ -10,12 +10,12 @@ export const BenefitCards: React.FC<BenefitCardsProps> = ({ onOpenScanNotice }) 
     {
       id: 'benefit-card-1',
       title: 'Scan Struk Belanja Otomatis',
-      description: 'Cukup foto nota belanja, sistem membantu mengenali nominal dan kategori.',
+      description: 'Cukup foto nota belanja, AI otomatis mengenali nama toko, total nominal, dan kategori.',
       icon: Camera,
       iconBg: 'bg-[#F9ECE7]',
       iconBorder: 'border-[#F2D8CD]',
       iconColor: 'text-[#B86B5A]',
-      tag: 'Segera Hadir',
+      tag: 'Coba Sekarang',
       isComingSoon: true,
     },
     {

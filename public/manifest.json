@@ -1,0 +1,61 @@
+{
+  "id": "/",
+  "name": "KelolaKeuangan — Keuangan Tenang, Keluarga Senang",
+  "short_name": "KeuanganKu",
+  "description": "Pencatat keuangan keluarga & pribadi cerdas. Dilengkapi fitur scan struk belanja otomatis berbasis AI.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FAF7F2",
+  "theme_color": "#684D40",
+  "lang": "id",
+  "dir": "ltr",
+  "categories": ["finance", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Pindai Struk AI",
+      "short_name": "Scan Struk",
+      "description": "Buka pemindai struk belanja otomatis berbasis AI",
+      "url": "/?action=scan",
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Buku Kas Keuangan",
+      "short_name": "Buku Kas",
+      "description": "Lihat ringkasan dan transaksi keuangan",
+      "url": "/?view=dashboard",
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

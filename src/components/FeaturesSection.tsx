@@ -25,14 +25,14 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({ onSelectFeatur
     {
       id: 'feature-1',
       title: 'Scan Struk Belanja',
-      description: 'Ubah foto nota menjadi catatan digital rapi.',
+      description: 'Ubah foto nota menjadi catatan kas digital instan.',
       icon: Camera,
       iconBg: 'bg-[#FBEBE7]',
       iconBorder: 'border-[#F4D3C9]',
       iconColor: 'text-[#B86B5A]',
-      highlight: 'Segera Hadir',
+      highlight: 'AI Aktif',
       isComingSoon: true,
-      detail: 'Deteksi otomatis nominal total, tanggal, dan nama toko dalam hitungan detik.',
+      detail: 'Deteksi otomatis nominal total, tanggal, dan nama toko dalam hitungan detik menggunakan Gemini AI.',
     },
     {
       id: 'feature-2',
